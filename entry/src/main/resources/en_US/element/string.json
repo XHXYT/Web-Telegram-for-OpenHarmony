@@ -1,0 +1,216 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "Telegram"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "Home"
+    },
+    {
+      "name": "HomeAbility_label",
+      "value": "BrowserCat"
+    },
+    {
+      "name": "permission_reason_INTERNET",
+      "value": "For web browsing"
+    },
+    {
+      "name": "Index_tabs_title",
+      "value": "Tabs"
+    },
+    {
+      "name": "Index_bookmarks_title",
+      "value": "Bookmarks"
+    },
+    {
+      "name": "Index_more_title",
+      "value": "More"
+    },
+    {
+      "name": "Index_add_bookmark_title",
+      "value": "New Bookmark"
+    },
+    {
+      "name": "Index_add_folder_title",
+      "value": "New Folder"
+    },
+    {
+      "name": "Index_import_bookmarks_title",
+      "value": "Import Bookmakrs"
+    },
+    {
+      "name": "Index_export_bookmarks_title",
+      "value": "Export Bookmarks"
+    },
+    {
+      "name": "Index_select_file",
+      "value": "Browse"
+    },
+    {
+      "name": "Button_click_again",
+      "value": "Confirm"
+    },
+    {
+      "name": "Index_app_settings_title",
+      "value": "Settings"
+    },
+    {
+      "name": "Settings_start_up",
+      "value": "On Start Up"
+    },
+    {
+      "name": "Settings_general",
+      "value": "General"
+    },
+    {
+      "name": "Settings_appearance",
+      "value": "Appearance"
+    },
+    {
+      "name": "Settings_about",
+      "value": "About"
+    },
+    {
+      "name": "Settings_appearance_title_bar_position",
+      "value": "Title bar position"
+    },
+    {
+      "name": "Settings_general_custom_ua",
+      "value": "Custom user-agent"
+    },
+    {
+      "name": "Settings_general_custom_ua_default",
+      "value": "System Default"
+    },
+    {
+      "name": "Index_downloads_title",
+      "value": "DownloadsList"
+    },
+    {
+      "name": "permission_reason_READ_PASTEPOARD",
+      "value": "For suggesting shortcuts to urls in clipboard"
+    },
+    {
+      "name": "Downloads_copied",
+      "value": "Copied ψ(｀∇´)ψ !"
+    },
+    {
+      "name": "Downloads_notice_title",
+      "value": "Attention Please ੭ ᐕ)੭ ( This code is from the BrowserCat. uploader@awa_Liny)"
+    },
+    {
+      "name": "Downloads_notice_content",
+      "value": "Due to security issues, all downloads are temporarily stored here. You have to manually save them to local storage before exiting this app!"
+    },
+    {
+      "name": "Settings_general_new_tab_url",
+      "value": "New tabs URL"
+    },
+    {
+      "name": "Settings_start_up_new_tab",
+      "value": "New Tab"
+    },
+    {
+      "name": "Settings_start_up_home",
+      "value": "Home"
+    },
+    {
+      "name": "Settings_start_up_continue",
+      "value": "Reopen"
+    },
+    {
+      "name": "Settings_general_home_url",
+      "value": "Home URL"
+    },
+    {
+      "name": "Index_download_task_start",
+      "value": "ヾ(⌐■_■)ノ♪"
+    },
+    {
+      "name": "Settings_start_up_page",
+      "value": "Start up page"
+    },
+    {
+      "name": "Settings_Experience",
+      "value": "Experience"
+    },
+    {
+      "name": "Settings_experience_max_bookmark_advice",
+      "value": "Max bookmark suggestions number"
+    },
+    {
+      "name": "Settings_experience_history",
+      "value": "History"
+    },
+    {
+      "name": "Settings_experience_history_view",
+      "value": "View history"
+    },
+    {
+      "name": "Settings_experience_history_today",
+      "value": "Today"
+    },
+    {
+      "name": "Settings_experience_history_this_month",
+      "value": "This month"
+    },
+    {
+      "name": "Settings_experience_history_this_year",
+      "value": "This year"
+    },
+    {
+      "name": "Settings_experience_history_before",
+      "value": "Before"
+    },
+    {
+      "name": "Settings_experience_history_from",
+      "value": "Since"
+    },
+    {
+      "name": "Settings_experience_history_to",
+      "value": "Before"
+    },
+    {
+      "name": "Settings_experience_history_selecting",
+      "value": "Selecting"
+    },
+    {
+      "name": "Settings_experience_history_selecting_items",
+      "value": "items"
+    },
+    {
+      "name": "Settings_experience_max_history_advice",
+      "value": "Max history suggestions number"
+    },
+    {
+      "name": "Settings_experience_history_record_new",
+      "value": "Record new history"
+    },
+    {
+      "name": "Settings_appearance_animation_response",
+      "value": "Animation response"
+    },
+    {
+      "name": "Settings_appearance_animation_damping_coefficient",
+      "value": "Animation elasticity"
+    },
+    {
+      "name": "Settings_general_custom_search_engine",
+      "value": "Custom search engine"
+    },
+    {
+      "name": "Paralleow",
+      "value": "Paralleow"
+    },
+    {
+      "name": "Paralleow_choose_a_tab",
+      "value": "Select a tab"
+    },
+    {
+      "name": "Paralleow_description",
+      "value": "Meowing feature to browse two tabs at the same time!"
+    }
+  ]
+}

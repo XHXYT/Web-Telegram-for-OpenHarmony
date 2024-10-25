@@ -1,0 +1,25 @@
+{
+  "color": [
+    {
+      "name": "app_title_color",
+      "value": "#ffffff"
+    },
+
+    {
+      "name": "start_window_background",
+      "value": "#ffffff"
+    },
+    {
+      "name": "background_color",
+      "value": "#ffffff"
+    },
+    {
+      "name": "font_color_title",
+      "value": "#FF000000"
+    },
+    {
+      "name": "status_bar",
+      "value": "#FFFFFFFF"
+    }
+  ]
+}

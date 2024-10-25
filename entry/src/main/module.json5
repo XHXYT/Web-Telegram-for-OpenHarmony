@@ -1,0 +1,51 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "EntryAbility",
+    "deviceTypes": [
+      "phone",
+      "tablet",
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    "requestPermissions":[
+      {
+        "name" : "ohos.permission.INTERNET",
+        "reason": "$string:app_name",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
+          "when":"inuse"
+        }
+      }
+    ],
+    "abilities": [
+      {
+        "name": "EntryAbility",
+        "srcEntry": "./ets/entryability/EntryAbility.ets",
+        "description": "$string:EntryAbility_desc",
+        "icon": "$media:icon",
+        "label": "$string:EntryAbility_desc",
+        "startWindowIcon": "$media:icon_startwindow",
+        "startWindowBackground": "$color:start_window_background",
+        "orientation": "auto_rotation_restricted",
+        "supportWindowMode": ["floating","split","fullscreen"],
+        "exported": true,
+        "skills": [
+          {
+          "entities": [
+            "entity.system.home"
+          ],
+          "actions": [
+            "action.system.home"
+          ]
+        }
+        ]
+      }
+    ]
+  }
+}

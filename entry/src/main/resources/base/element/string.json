@@ -1,0 +1,192 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "Telegram"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "Telegram"
+    },
+    {
+      "name": "HomeAbility_label",
+      "value": "冲浪喵"
+    },
+    {
+      "name": "permission_reason_INTERNET",
+      "value": "用于网页浏览"
+    },
+    {
+      "name": "Index_tabs_title",
+      "value": "标签页"
+    },
+    {
+      "name": "Index_bookmarks_title",
+      "value": "书签"
+    },
+    {
+      "name": "Index_more_title",
+      "value": "更多"
+    },
+    {
+      "name": "Index_add_bookmark_title",
+      "value": "新建书签"
+    },
+    {
+      "name": "Index_add_folder_title",
+      "value": "新建文件夹"
+    },
+    {
+      "name": "Index_import_bookmarks_title",
+      "value": "导入书签"
+    },
+    {
+      "name": "Index_export_bookmarks_title",
+      "value": "导出书签"
+    },
+    {
+      "name": "Index_select_file",
+      "value": "浏览"
+    },
+    {
+      "name": "Button_click_again",
+      "value": "确认"
+    },
+    {
+      "name": "Index_app_settings_title",
+      "value": "设置"
+    },
+    {
+      "name": "Settings_start_up",
+      "value": "启动时"
+    },
+    {
+      "name": "Settings_general",
+      "value": "通用"
+    },
+    {
+      "name": "Settings_appearance",
+      "value": "外观"
+    },
+    {
+      "name": "Settings_about",
+      "value": "关于"
+    },
+    {
+      "name": "Settings_appearance_title_bar_position",
+      "value": "标题栏位置"
+    },
+    {
+      "name": "Settings_general_custom_ua",
+      "value": "自定义用户代理（UA）"
+    },
+    {
+      "name": "Settings_general_custom_ua_default",
+      "value": "系统默认"
+    },
+    {
+      "name": "Index_downloads_title",
+      "value": "下载列表"
+    },
+    {
+      "name": "permission_reason_READ_PASTEPOARD",
+      "value": "以供快速跳转剪贴板链接"
+    },
+    {
+      "name": "Downloads_copied",
+      "value": "已复制 ψ(｀∇´)ψ ！"
+    },
+    {
+      "name": "Downloads_notice_title",
+      "value": "看这里！੭ ᐕ)੭ (此处代码来自冲浪喵 up主@awa_Liny)"
+    },
+    {
+      "name": "Downloads_notice_content",
+      "value": "由于安全性原因，所有的下载内容都被暂时安置在这里。在离开前，你需要把他们手动搬出去！"
+    },
+    {
+      "name": "Settings_general_new_tab_url",
+      "value": "新标签页地址"
+    },
+    {
+      "name": "Settings_start_up_new_tab",
+      "value": "新标签页"
+    },
+    {
+      "name": "Settings_start_up_home",
+      "value": "主页"
+    },
+    {
+      "name": "Settings_start_up_continue",
+      "value": "上次的进度"
+    },
+    {
+      "name": "Settings_general_home_url",
+      "value": "主页地址"
+    },
+    {
+      "name": "Settings_start_up_page",
+      "value": "启动时呈现"
+    },
+    {
+      "name": "Index_download_task_start",
+      "value": "ヾ(⌐■_■)ノ♪"
+    },
+    {
+      "name": "Settings_Experience",
+      "value": "体验"
+    },
+    {
+      "name": "Settings_experience_max_bookmark_advice",
+      "value": "最大书签建议数量"
+    },
+    {
+      "name": "Settings_experience_history",
+      "value": "历史"
+    },
+    {
+      "name": "Settings_experience_history_view",
+      "value": "浏览历史"
+    },
+    {
+      "name": "Settings_experience_history_today",
+      "value": "今日"
+    },
+    {
+      "name": "Settings_experience_history_this_month",
+      "value": "今月"
+    },
+    {
+      "name": "Settings_experience_history_this_year",
+      "value": "今年"
+    },
+    {
+      "name": "Settings_experience_history_before",
+      "value": "更久以前"
+    },
+    {
+      "name": "Settings_experience_history_from",
+      "value": "自"
+    },
+    {
+      "name": "Settings_experience_history_to",
+      "value": "至"
+    },
+    {
+      "name": "Settings_experience_history_selecting",
+      "value": "选中"
+    },
+    {
+      "name": "Settings_experience_history_selecting_items",
+      "value": "个项目"
+    },
+    {
+      "name": "Settings_appearance_animation_response",
+      "value": "动画响应时长"
+    },
+    {
+      "name": "Settings_appearance_animation_damping_coefficient",
+      "value": "动画弹力"
+    }
+  ]
+}
