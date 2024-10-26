@@ -31,6 +31,8 @@
 
 特别感谢[LinysBrowser_NEXT](https://github.com/awaLiny2333/LinysBrowser_NEXT)作为代码小白的我，在这个优秀的开源项目中学到了很多新知识。这是一个特别有意思的OpenHarmony平台的浏览器项目哦。
 
+特别感谢群友们的支持与帮助。
+
 
 
 
