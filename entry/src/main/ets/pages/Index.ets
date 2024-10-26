@@ -28,7 +28,6 @@ interface ExtObject {
   test: (str: string) => string;
 }
 
-//设置DNS
 connection.addCustomDnsRule("https://web.telegram.org/k/",
   ["149.154.167.99","128.121.243.106","108.160.162.109","149.154.167.99",
     "31.13.67.41","50.23.209.199","50.23.209.199 ","103.240.180.117",
@@ -45,17 +44,20 @@ connection.addCustomDnsRule("https://web.telegram.org/k/",
 @Component
 
 struct Index {
+
   @State isPhone: boolean = false
+  @State mode: WebDarkMode = WebDarkMode.Auto;
   @State access: boolean = true
+  @State scrollmode: OverScrollMode = OverScrollMode.ALWAYS;
   @State isClick: boolean = false;
   @State isShow: boolean = false;
   @State showing_downloads: boolean = true;
-  @State mode: WebDarkMode = WebDarkMode.Auto;
-  @State scrollmode: OverScrollMode = OverScrollMode.ALWAYS;
+  @State handler: FullScreenExitHandler | null = null; //通知开发者Web组件进入或退出全屏模式
+  @State sandboxFilePath: string = "/data/storage/el1/bundle/cache" //文件的沙箱路径
+  @State statusBar: number = AppStorage.get<number>('statusBar') as number;
   @StorageProp('bottomRectHeight') bottomRectHeight: number = 0;
   @StorageProp('topRectHeight') topRectHeight: number = 0;
 
-  statusBar: number = AppStorage.get<number>('statusBar') as number;
 
   // Implement the extended browser object
   extObj: ExtObject = {
@@ -85,8 +87,8 @@ struct Index {
     } catch (e) {
       hilog.info(0x0, '[Index]', `getSync unexpected error: ${e}`)
     }
-
   }
+
 
   controller: webview.WebviewController = new webview.WebviewController()
   delegate: webview.WebDownloadDelegate = new webview.WebDownloadDelegate()
@@ -95,10 +97,10 @@ struct Index {
     Column() {
       Stack() {
         Web({
-          src:'https://web.telegram.org/k/',
+          src: 'https://web.telegram.org/k/',
           controller: this.controller
         })
-          //$rawfile('index.html')  'https://web.telegram.org/k/'
+          //$rawfile('index.html')   'https://web.telegram.org/k/'
           .darkMode(this.mode)
           .forceDarkAccess(this.access)
           .zoomAccess(false)
@@ -111,10 +113,33 @@ struct Index {
           .domStorageAccess(true)
           .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM])
           .databaseAccess(true)
-          .javaScriptAccess(true)//上传文件(默认)
-          .onShowFileSelector((event) => {
-            console.log('文件上传 onShowFileSelector invoked');
+          .javaScriptAccess(true)
+
+            //通知开发者Web组件进入全屏模式
+          .onFullScreenEnter((event) => {
+            console.log("onFullScreenEnter videoWidth: " + event.videoWidth +
+              ", videoHeight: " + event.videoHeight);
+            // 应用可以通过 this.handler.exitFullScreen() 主动退出全屏。
+            this.handler = event.handler;
+          })//通知开发者Web组件退出全屏模式
+          .onFullScreenExit(() => {
+            console.log("onFullScreenExit...")
+            if (this.handler) {
+              this.handler.exitFullScreen();
+            }
+          })
+          //上传文件(支持媒体与资源文件)
+        .onShowFileSelector((event) => {
+            console.log('MyFileUploader onShowFileSelector invoked');
             const documentSelectOptions = new picker.DocumentSelectOptions();
+            // 选择文档的最大数目（可选）
+            documentSelectOptions.maxSelectNumber = 5;
+            // 指定选择的文件或者目录路径（可选）
+            //documentSelectOptions.defaultFilePathUri = "file://docs/storage/Users";
+            // 选择文件的后缀类型['后缀类型描述|后缀类型']（可选） 若选择项存在多个后缀名，则每一个后缀名之间用英文逗号进行分隔（可选），后缀类型名不能超过100,选择所有文件：'所有文件(*.*)|.*';
+            documentSelectOptions.fileSuffixFilters = ['图片(.png, .jpg)|.png,.jpg', '文档|.txt', '视频|.mp4', '.pdf','.zip','音频|.mp3,.flac','软件|.apk,.hap,.app,.ipa','所有文件(*.*)|.*'];
+            //选择是否对指定文件或目录授权，true为授权，当为true时，defaultFilePathUri为必选参数，拉起文管授权界面；false为非授权，拉起常规文管界面（可选）
+            documentSelectOptions.authMode = true;
             let uri: string | null = null;
             const documentViewPicker = new picker.DocumentViewPicker();
             documentViewPicker.select(documentSelectOptions).then((documentSelectResult) => {
@@ -126,8 +151,17 @@ struct Index {
             }).catch((err: BusinessError) => {
               console.error(`Invoke documentViewPicker.select failed, code is ${err.code}, message is ${err.message}`);
             })
-            return true;
-          })//文件下载通知
+
+          this.selectFile().then((selected) => {
+            if (selected) {
+              let fileList: Array<string> = [this.sandboxFilePath,]
+              event.result.handleFileList(fileList)
+            }
+          })
+          return true
+        })
+
+            //文件下载通知
           .onDownloadStart((event) => {
             if (event) {
               console.log('url:' + event.url)
@@ -135,7 +169,6 @@ struct Index {
             }
           })
           .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.BOTTOM])
-
           .javaScriptProxy({
             object: this.extObj,
             name: "extObj",
@@ -180,7 +213,7 @@ struct Index {
                 let path: string = new fileUri.FileUri(downloaduri).path
                 // 传入一个下载路径，如果传入一个不存在的路径，则会下载到默认/data/storage/el2/base/cache/web/目录
                 let filePath = path + "/" + webDownloadItem.getSuggestedFileName()
-                //这边要多加一个fs.OpenMode.CREATE得到创建文件的权限(实测好像不需要申请也行，另外应该是我不会写的缘故，一开下面这个运行下载直接重启（ )
+                //这边要多加一个fs.OpenMode.CREATE得到创建文件的权限(实测好像不需要申请也行，并且应该是我不会写的缘故，一开下面这个运行下载直接重启（ )
                 //let file  = fs.openSync(filePath, fs.OpenMode.READ_WRITE | fs.OpenMode.CREATE)
                 // 开始下载
                 webDownloadItem.start(filePath);
@@ -216,7 +249,7 @@ struct Index {
             hilog.info(0x0, '[Index]', `onProgressChange`)
           })
 
-        /*  这部分还没想好怎么写，就先封存吧
+        /*  这部分还没想好怎么写，就先封存吧   PS：本来想复制Liny大佬的代码，但是我太菜了抄都不会抄
                 Button({ type: ButtonType.Circle, stateEffect: false }) {
                   Image(this.isClick ? $r('app.media.xmark'): $r('app.media.arrow_up_to_line'))
                     .interpolation(ImageInterpolation.High)
@@ -281,24 +314,72 @@ struct Index {
       .padding({ top: px2vp(this.topRectHeight), }) //bottom: px2vp(this.bottomRectHeight) })
       //.padding({ top: this.statusBar }) // 此处margin或padding具体数值在实际中应与状态栏区域高度保持一致
       .onAreaChange((_o, n) => {
-
       })
 
     }
 
   }
 
-
   onBackPress() {
     // 当前页面是否可前进或者后退给定的step步(-1),正数代表前进，负数代表后退
     if (this.controller.accessStep(-1)) {
       this.controller.backward(); // 返回上一个web页
       // 执行用户自定义返回逻辑
+
       return true;
     } else {
       // 执行系统默认返回逻辑，返回上一个page页
       return false;
     }
+  }
+
+  //选择上传的文件
+  async selectFile(): Promise<boolean> {
+  //选择任意文件
+      let filePicker = new picker.DocumentViewPicker();
+      let result = await filePicker.select();
+      if (result.length > 0) {
+        return this.copySelFile2Sandbox(result[0])
+      }
+      return false
+  }
+
+  //复制资源文件到沙箱
+  async copyResFile2Sandbox(resFile: string): Promise<boolean> {
+    let context = getContext(this)
+    //计划复制到的目标路径
+    let realUri = context.cacheDir + "/" + resFile
+    let rawFd = await context.resourceManager.getRawFd(resFile)
+
+    //复制资源文件到沙箱cache文件夹
+    try {
+      fs.copyFileSync(rawFd.fd, realUri)
+      this.sandboxFilePath = realUri
+      return true
+    } catch (err) {
+      console.error(err.message)
+    }
+    return false
+  }
+
+  //复制选中文件到沙箱
+  copySelFile2Sandbox(selectFile: string): boolean {
+    let context = getContext(this)
+    let segments = selectFile.split('/')
+    //文件名称
+    let fileName = segments[segments.length-1]
+    //计划复制到的目标路径
+    let realUri = context.cacheDir + "/" + fileName
+    //复制选择的文件到沙箱cache文件夹
+    try {
+      let file = fs.openSync(selectFile);
+      fs.copyFileSync(file.fd, realUri)
+      this.sandboxFilePath = realUri
+      return true
+    } catch (err) {
+      console.error(err.message)
+    }
+    return false
   }
 
 }

@@ -5,13 +5,13 @@
         "name": "webTelegram",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\Administrator\\.ohos\\config\\webTelegram_web-OH-Telegram_l31HueNw8YBi3Mo_A5T73kXj9nxb6t1uS5Pq1RZx2MA=.cer",
-          "storePassword": "0000001B487AD8C0053C5799FF14637BC8191A804E05961C2EDC12232E69DC26FB62002E0E4A21163768DC",
+          "certpath": "C:\\Users\\Administrator\\.ohos\\config\\webTelegram_Web-Telegram-for-OpenHarmony_sQ8Z9-u8lI9L3Ud0Bjbwu5u5APftVNz6g1MhFeZrxyc=.cer",
+          "storePassword": "0000001A71D100C3D53FFF41298B599E112D114CFEC344F19029A8C852972E6D1F39A332ED1EF01D0A76",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001B50C2F282A230C5261445D6A817A21C2AEAE87B33175470ED2B075BCD487034669722D0AB9BBECB",
-          "profile": "C:\\Users\\Administrator\\.ohos\\config\\webTelegram_web-OH-Telegram_l31HueNw8YBi3Mo_A5T73kXj9nxb6t1uS5Pq1RZx2MA=.p7b",
+          "keyPassword": "0000001A3073C80ABF5BABAECA8253BA5DBFBB2B4D91A7C022AF2C54444A424F5CC5DD95379F7B463425",
+          "profile": "C:\\Users\\Administrator\\.ohos\\config\\webTelegram_Web-Telegram-for-OpenHarmony_sQ8Z9-u8lI9L3Ud0Bjbwu5u5APftVNz6g1MhFeZrxyc=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\Administrator\\.ohos\\config\\webTelegram_web-OH-Telegram_l31HueNw8YBi3Mo_A5T73kXj9nxb6t1uS5Pq1RZx2MA=.p12"
+          "storeFile": "C:\\Users\\Administrator\\.ohos\\config\\webTelegram_Web-Telegram-for-OpenHarmony_sQ8Z9-u8lI9L3Ud0Bjbwu5u5APftVNz6g1MhFeZrxyc=.p12"
         }
       }
     ],
