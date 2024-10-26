@@ -19,7 +19,7 @@
 
 ## 下载
 
-通过本页面 [release](https://github.com/Predidit/Kazumi/releases) 选项卡下载
+通过本页面 [release]([https://github.com/Predidit/Kazumi/releases](https://github.com/XHXYT/Web-Telegram-for-HarmonyOS-NEXT/releases) 选项卡下载
 
 ## 禁止商用条款
 
