@@ -29,8 +29,8 @@ interface ExtObject {
 }
 
 connection.addCustomDnsRule("https://web.telegram.org/k/",
-  ["149.154.167.99","128.121.243.106","108.160.162.109","149.154.167.99",
-    "31.13.67.41","50.23.209.199","50.23.209.199 ","103.240.180.117",
+  ["149.154.167.99", "128.121.243.106", "108.160.162.109", "149.154.167.99",
+    "31.13.67.41", "50.23.209.199", "50.23.209.199 ", "103.240.180.117",
   ],
   (error: BusinessError, data: void) => {
     if (error) {
@@ -42,9 +42,7 @@ connection.addCustomDnsRule("https://web.telegram.org/k/",
 
 @Entry
 @Component
-
 struct Index {
-
   @State isPhone: boolean = false
   @State mode: WebDarkMode = WebDarkMode.Auto;
   @State access: boolean = true
@@ -57,7 +55,8 @@ struct Index {
   @State statusBar: number = AppStorage.get<number>('statusBar') as number;
   @StorageProp('bottomRectHeight') bottomRectHeight: number = 0;
   @StorageProp('topRectHeight') topRectHeight: number = 0;
-
+  controller: webview.WebviewController = new webview.WebviewController()
+  delegate: webview.WebDownloadDelegate = new webview.WebDownloadDelegate()
 
   // Implement the extended browser object
   extObj: ExtObject = {
@@ -66,13 +65,6 @@ struct Index {
       return "test " + str;
     }
   };
-
-  private changeClick(isClick: boolean) {
-    animateTo({ duration: 200, curve: Curve.EaseInOut }, () => {
-      this.isClick = !this.isClick;
-      this.showing_downloads = !this.showing_downloads;
-    })
-  }
 
   aboutToAppear(): void {
     try {
@@ -89,18 +81,13 @@ struct Index {
     }
   }
 
-
-  controller: webview.WebviewController = new webview.WebviewController()
-  delegate: webview.WebDownloadDelegate = new webview.WebDownloadDelegate()
-
   build() {
     Column() {
       Stack() {
         Web({
           src: 'https://web.telegram.org/k/',
           controller: this.controller
-        })
-          //$rawfile('index.html')   'https://web.telegram.org/k/'
+        })//$rawfile('index.html')   'https://web.telegram.org/k/'
           .darkMode(this.mode)
           .forceDarkAccess(this.access)
           .zoomAccess(false)
@@ -113,9 +100,7 @@ struct Index {
           .domStorageAccess(true)
           .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM])
           .databaseAccess(true)
-          .javaScriptAccess(true)
-
-            //通知开发者Web组件进入全屏模式
+          .javaScriptAccess(true)//通知开发者Web组件进入全屏模式
           .onFullScreenEnter((event) => {
             console.log("onFullScreenEnter videoWidth: " + event.videoWidth +
               ", videoHeight: " + event.videoHeight);
@@ -127,9 +112,8 @@ struct Index {
             if (this.handler) {
               this.handler.exitFullScreen();
             }
-          })
-          //上传文件(支持媒体与资源文件)
-        .onShowFileSelector((event) => {
+          })//上传文件(支持媒体与资源文件)
+          .onShowFileSelector((event) => {
             console.log('MyFileUploader onShowFileSelector invoked');
             const documentSelectOptions = new picker.DocumentSelectOptions();
             // 选择文档的最大数目（可选）
@@ -137,31 +121,20 @@ struct Index {
             // 指定选择的文件或者目录路径（可选）
             //documentSelectOptions.defaultFilePathUri = "file://docs/storage/Users";
             // 选择文件的后缀类型['后缀类型描述|后缀类型']（可选） 若选择项存在多个后缀名，则每一个后缀名之间用英文逗号进行分隔（可选），后缀类型名不能超过100,选择所有文件：'所有文件(*.*)|.*';
-            documentSelectOptions.fileSuffixFilters = ['图片(.png, .jpg)|.png,.jpg', '文档|.txt', '视频|.mp4', '.pdf','.zip','音频|.mp3,.flac','软件|.apk,.hap,.app,.ipa','所有文件(*.*)|.*'];
+            documentSelectOptions.fileSuffixFilters =
+              ['图片(.png, .jpg)|.png,.jpg', '文档|.txt', '视频|.mp4', '.pdf', '.zip', '音频|.mp3,.flac',
+                '软件|.apk,.hap,.app,.ipa', '所有文件(*.*)|.*'];
             //选择是否对指定文件或目录授权，true为授权，当为true时，defaultFilePathUri为必选参数，拉起文管授权界面；false为非授权，拉起常规文管界面（可选）
             documentSelectOptions.authMode = true;
-            let uri: string | null = null;
-            const documentViewPicker = new picker.DocumentViewPicker();
-            documentViewPicker.select(documentSelectOptions).then((documentSelectResult) => {
-              uri = documentSelectResult[0];
-              console.info('documentViewPicker.select to file succeed and uri is:' + uri);
-              if (event) {
-                event.result.handleFileList([uri]);
+
+            this.selectFile().then((selected) => {
+              if (selected) {
+                let fileList: Array<string> = [this.sandboxFilePath,]
+                event.result.handleFileList(fileList)
               }
-            }).catch((err: BusinessError) => {
-              console.error(`Invoke documentViewPicker.select failed, code is ${err.code}, message is ${err.message}`);
             })
-
-          this.selectFile().then((selected) => {
-            if (selected) {
-              let fileList: Array<string> = [this.sandboxFilePath,]
-              event.result.handleFileList(fileList)
-            }
-          })
-          return true
-        })
-
-            //文件下载通知
+            return true
+          })//文件下载通知
           .onDownloadStart((event) => {
             if (event) {
               console.log('url:' + event.url)
@@ -335,13 +308,13 @@ struct Index {
 
   //选择上传的文件
   async selectFile(): Promise<boolean> {
-  //选择任意文件
-      let filePicker = new picker.DocumentViewPicker();
-      let result = await filePicker.select();
-      if (result.length > 0) {
-        return this.copySelFile2Sandbox(result[0])
-      }
-      return false
+    //选择任意文件
+    let filePicker = new picker.DocumentViewPicker();
+    let result = await filePicker.select();
+    if (result.length > 0) {
+      return this.copySelFile2Sandbox(result[0])
+    }
+    return false
   }
 
   //复制资源文件到沙箱
@@ -382,6 +355,12 @@ struct Index {
     return false
   }
 
+  private changeClick(isClick: boolean) {
+    animateTo({ duration: 200, curve: Curve.EaseInOut }, () => {
+      this.isClick = !this.isClick;
+      this.showing_downloads = !this.showing_downloads;
+    })
+  }
 }
 
 
