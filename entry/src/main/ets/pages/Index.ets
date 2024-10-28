@@ -364,7 +364,7 @@ struct Index {
           .onProgressChange((event) => {
             hilog.info(0x0, '[Index]', `onProgressChange`)
           })
-
+/*
         Button({ type: ButtonType.Circle, stateEffect: false }) {
           Image(this.isClick ? $r('app.media.xmark') : $r('app.media.arrow_up_to_line'))
             .interpolation(ImageInterpolation.High)
@@ -380,9 +380,11 @@ struct Index {
             .width(25)
             .height(25)
         }
+        .visibility(Visibility.Hidden)
         .backgroundColor(0x3390ec)
         .shadow({ radius: 5 })
-        .position({ x: '4.6%', y: '92.4%' })
+        .opacity(0.5)
+        .position({ x: '4.6%', y: '91.4%' })
         .width(54)
         .height(54)
         .onClick(() => {
@@ -406,7 +408,7 @@ struct Index {
               this.isShow = true
             })
             .padding(5)
-            .position({ x: '7%', y: '17%' })
+            .position({ x: '7%', y: '16%' })
             .borderRadius(10)
             .backgroundColor($r('app.color.start_window_background'))
             .shadow({ radius: 16 })
@@ -423,7 +425,7 @@ struct Index {
           })
 
         }
-
+*/
 
       }
       .backgroundColor($r('app.color.background_color'))
