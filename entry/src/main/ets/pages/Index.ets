@@ -6,7 +6,8 @@ import { fileUri, fileIo as fs, picker } from '@kit.CoreFileKit';
 import { common } from '@kit.AbilityKit';
 import { promptAction } from '@kit.ArkUI';
 import { connection } from '@kit.NetworkKit';
-import { mediaquery, window } from '@kit.ArkUI';
+import { wantAgent, WantAgent } from '@kit.AbilityKit';
+import { notificationManager } from '@kit.NotificationKit';
 
 
 // no User Agent, test
@@ -22,6 +23,30 @@ const PAD_USER_AGENT: string =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTMl, like Gecko) Chrome/99.0.4844.88 Safari/537.36'
 const PHONE_USER_AGENT: string =
   'Mozilla/5.0 (Linux; Android 10.0; ohos) AppleWebKit/537.36 (KHTMl, like Gecko) Chrome/99.0.4844.88 HuaweiBrowser/13.0.4.302 Mobile Safari/537.36'
+
+const TAG: string = '[PublishOperation]';
+const DOMAIN_NUMBER: number = 0xFF00;
+
+//请求通知授权
+let context = getContext(this) as common.UIAbilityContext;
+notificationManager.isNotificationEnabled().then((data: boolean) => {
+  hilog.info(DOMAIN_NUMBER, TAG, "isNotificationEnabled success, data: " + JSON.stringify(data));
+  if (!data) {
+    notificationManager.requestEnableNotification(context).then(() => {
+      hilog.info(DOMAIN_NUMBER, TAG, `[ANS] requestEnableNotification success`);
+    }).catch((err: BusinessError) => {
+      if (1600004 == err.code) {
+        hilog.error(DOMAIN_NUMBER, TAG,
+          `[ANS] requestEnableNotification refused, code is ${err.code}, message is ${err.message}`);
+      } else {
+        hilog.error(DOMAIN_NUMBER, TAG,
+          `[ANS] requestEnableNotification failed, code is ${err.code}, message is ${err.message}`);
+      }
+    });
+  }
+}).catch((err: BusinessError) => {
+  hilog.error(DOMAIN_NUMBER, TAG, `isNotificationEnabled fail, code is ${err.code}, message is ${err.message}`);
+});
 
 // Define the interface for the extended object
 interface ExtObject {
@@ -44,12 +69,22 @@ connection.addCustomDnsRule("https://web.telegram.org/k/",
 @Component
 struct Index {
   @State isPhone: boolean = false
-  @State mode: WebDarkMode = WebDarkMode.Auto;
   @State access: boolean = true
-  @State scrollmode: OverScrollMode = OverScrollMode.ALWAYS;
   @State isClick: boolean = false;
   @State isShow: boolean = false;
+  @State realUri: string = "";
   @State showing_downloads: boolean = true;
+  @State DownloadPercentComplete: number = 0;
+  @State DownloadProgressValue: string = "";
+  @State DownloadFileName: string = "";
+  @State DownloadList: string = "";
+  @State DownloadSpeed: string = "";
+  @State DownloadTotalBytes: string = "";
+  @State DownloadState: string = "";
+  @State DownloadReceivedBytes: number = 0;
+  @State DownloadTimeRemaining: string = '';
+  @State mode: WebDarkMode = WebDarkMode.Auto;
+  @State scrollmode: OverScrollMode = OverScrollMode.ALWAYS;
   @State handler: FullScreenExitHandler | null = null; //通知开发者Web组件进入或退出全屏模式
   @State sandboxFilePath: string = "/data/storage/el1/bundle/cache" //文件的沙箱路径
   @State statusBar: number = AppStorage.get<number>('statusBar') as number;
@@ -87,7 +122,7 @@ struct Index {
         Web({
           src: 'https://web.telegram.org/k/',
           controller: this.controller
-        })//$rawfile('index.html')   'https://web.telegram.org/k/'
+        })//$rawfile('index.html')   'https://web.telegram.org/k/'   'http://miss.qingchengkg.cn/'
           .darkMode(this.mode)
           .forceDarkAccess(this.access)
           .zoomAccess(false)
@@ -191,16 +226,124 @@ struct Index {
                 // 开始下载
                 webDownloadItem.start(filePath);
                 promptAction.showToast({ message: "开始下载" })
-                //console.info("file fd: " + file.fd);
+                //获取下载件名称
+                this.DownloadFileName = webDownloadItem.getSuggestedFileName()
 
               })
               this.delegate.onDownloadUpdated((webDownloadItem: webview.WebDownloadItem) => {
                 // 下载任务的唯一标识。
                 console.log("download update guid: " + webDownloadItem.getGuid());
+
+                // 下载文件的总长度
+                this.DownloadTotalBytes = (webDownloadItem.getTotalBytes() / 1024 / 1024).toFixed(2) + 'MB'
+                console.log("下载文件的总长度 : " + this.DownloadTotalBytes)
+
                 // 下载的进度。
-                console.log("download update guid: " + webDownloadItem.getPercentComplete());
+                console.log("download update guid: " + webDownloadItem.getPercentComplete())
+                this.DownloadPercentComplete = webDownloadItem.getPercentComplete()
+                this.DownloadProgressValue = this.DownloadPercentComplete + '%'
+                console.log("下载进度 : " + this.DownloadProgressValue)
+
                 // 当前的下载速度。
                 console.log("download update speed: " + webDownloadItem.getCurrentSpeed())
+                this.DownloadSpeed = (webDownloadItem.getCurrentSpeed() / 1024 / 1024).toFixed(2) + 'MB/s'
+                console.log("下载速度 : " + this.DownloadSpeed)
+
+                //已接收字节数
+                this.DownloadReceivedBytes = webDownloadItem.getReceivedBytes()
+                //剩余时间
+                this.DownloadTimeRemaining =' | ' + ((webDownloadItem.getTotalBytes() - this.DownloadReceivedBytes) / webDownloadItem.getCurrentSpeed()).toFixed(0) + 's'
+                if (this.DownloadTimeRemaining == ' | NaNs') {
+                  this.DownloadTimeRemaining = ''
+                }
+
+                // 下载的状态
+                if (this.DownloadPercentComplete == 100) {
+                  this.DownloadState = '下载完成'
+                } else {
+                  this.DownloadState = '正在下载'
+                }
+                console.log("下载状态 : " + this.DownloadState)
+
+                // 用于保存创建成功的wantAgent对象，后续使用其完成触发的动作。
+                let wantAgentObj:WantAgent;
+                // 通过WantAgentInfo的operationType设置动作类型
+                let wantAgentInfo:wantAgent.WantAgentInfo = {
+                  wants: [
+                    {
+                      deviceId: '',
+                      bundleName: 'org.ohos.webtelegram',
+                      abilityName: 'EntryAbility',
+                      action: '',
+                      entities: [],
+                      uri: '',
+                      parameters: {}
+                    }
+                  ],
+                  actionType: wantAgent.OperationType.START_ABILITY,
+                  requestCode: 0,
+                  wantAgentFlags:[wantAgent.WantAgentFlags.CONSTANT_FLAG]
+                };
+                // 创建WantAgent
+                wantAgent.getWantAgent(wantAgentInfo, (err: BusinessError, data:WantAgent) => {
+                  if (err) {
+                    hilog.error(DOMAIN_NUMBER, TAG, `Failed to get want agent. Code is ${err.code}, message is ${err.message}`);
+                    return;
+                  }
+                  hilog.info(DOMAIN_NUMBER, TAG, 'Succeeded in getting want agent.');
+                  wantAgentObj = data;
+                });
+
+                //查询系统是否支持进度条模板
+                notificationManager.isSupportTemplate('downloadTemplate').then((data: boolean) => {
+                  hilog.info(DOMAIN_NUMBER, TAG, 'Succeeded in supporting download template notification.');
+                  let isSupportTpl: boolean = data; // isSupportTpl的值为true表示支持downloadTemplate模板类通知，false表示不支持
+                  //构造进度条模板对象
+                  if (data = true) {
+                    //去除后缀名
+                    let fullFileName: string = this.DownloadFileName
+                    let thefileName: string = this.getFileName(fullFileName) + '  ' + this.DownloadState
+                    console.log('文件名为：' + thefileName)
+                    this.DownloadList = this.DownloadProgressValue + ' | ' + this.DownloadTotalBytes + ' | ' + this.DownloadSpeed + this.DownloadTimeRemaining
+
+                    let notificationRequest: notificationManager.NotificationRequest = {
+                      id: 5,
+                      // wantAgentObj使用前需要保证已被赋值
+                      wantAgent: wantAgentObj,
+                      content: {
+                        notificationContentType: notificationManager.ContentType.NOTIFICATION_CONTENT_BASIC_TEXT,
+                        normal: {
+                          title: 'test_title',
+                          text: 'test_text',
+                          additionalText: 'test_additionalText'
+                        }
+                      },
+                      // 构造进度条模板，name字段当前需要固定配置为downloadTemplate
+                      template: {
+                        name: 'downloadTemplate',
+                        data: {
+                          title: thefileName,
+                          fileName: this.DownloadList,
+                          progressValue: this.DownloadPercentComplete
+                        }
+                      }
+                    }
+                    // 发布通知
+                    notificationManager.publish(notificationRequest, (err: BusinessError) => {
+                      if (err) {
+                        hilog.error(DOMAIN_NUMBER, TAG,
+                          `Failed to publish notification. Code is ${err.code}, message is ${err.message}`);
+                        return;
+                      }
+                      hilog.info(DOMAIN_NUMBER, TAG, 'Succeeded in publishing notification.');
+                    });
+                  } else {
+                    console.error('当前设备不支持进度条模板')
+                  }
+                }).catch((err: BusinessError) => {
+                  hilog.error(DOMAIN_NUMBER, TAG, `不支持下载进度通知. Code is ${err.code}, message is ${err.message}`);
+                });
+
               })
               this.delegate.onDownloadFailed((webDownloadItem: webview.WebDownloadItem) => {
                 console.log("download failed guid: " + webDownloadItem.getGuid());
@@ -210,7 +353,7 @@ struct Index {
               this.delegate.onDownloadFinish((webDownloadItem: webview.WebDownloadItem) => {
                 console.log("download finish guid: " + webDownloadItem.getGuid());
                 promptAction.showToast({ message: "下载完成" })
-                console.log("下载完成");
+                //console.log("下载完成");
               })
               this.controller.setDownloadDelegate(this.delegate);
             } catch (error) {
@@ -222,63 +365,65 @@ struct Index {
             hilog.info(0x0, '[Index]', `onProgressChange`)
           })
 
-        /*  这部分还没想好怎么写，就先封存吧   PS：本来想复制Liny大佬的代码，但是我太菜了抄都不会抄
-                Button({ type: ButtonType.Circle, stateEffect: false }) {
-                  Image(this.isClick ? $r('app.media.xmark'): $r('app.media.arrow_up_to_line'))
-                    .interpolation(ImageInterpolation.High)
-                    .fillColor(Color.White)
-                    .rotate({
-                      x: 0,
-                      y: 0,
-                      z: 1,
-                      centerX: '50%',
-                      centerY: '50%',
-                      angle: 180
-                    })
-                    .width(25).height(25)
-                }
-                  .backgroundColor(0x3390ec)
-                  .shadow({radius: 5})
-                  .position({x: '4.6%', y: '94.7%'})
-                  .width(54)
-                  .height(54)
-                  .onClick(() => {
-                    this.changeClick(!this.isClick)
-                    this.isShow = !this.isShow
-                  })
-                if (this.isShow) {
-                  Column(){
-                      Column(){
-                        Text($r('app.string.Index_downloads_title'))
-                          .textAlign(TextAlign.Start)
+        Button({ type: ButtonType.Circle, stateEffect: false }) {
+          Image(this.isClick ? $r('app.media.xmark') : $r('app.media.arrow_up_to_line'))
+            .interpolation(ImageInterpolation.High)
+            .fillColor(Color.White)
+            .rotate({
+              x: 0,
+              y: 0,
+              z: 1,
+              centerX: '50%',
+              centerY: '50%',
+              angle: 180
+            })
+            .width(25)
+            .height(25)
+        }
+        .backgroundColor(0x3390ec)
+        .shadow({ radius: 5 })
+        .position({ x: '4.6%', y: '92.4%' })
+        .width(54)
+        .height(54)
+        .onClick(() => {
+          this.changeClick(!this.isClick)
+          this.isShow = !this.isShow
+        })
 
-
-                      }
-                      //阻止卡片内点击隐藏
-                      .onClick(() => {
-                        this.isShow = true
-                      })
-                      .padding(5)
-                      .position({x: '7%', y: '20%'})
-                      .borderRadius(10)
-                      .backgroundColor($r('app.color.start_window_background'))
-                      .shadow({radius: 16})
-                      .width('85%')
-                      .height('80%')
-                      //.backgroundColor(Color.Blue)
-                  }
-                  .width('100%')
-                  .height('88%')
-                  //.backgroundColor(Color.Pink)
-                  .onClick(() => {
-                    this.isShow = !this.isShow
-                  })
-
-                }
+        if (this.isShow) {
+          Column() {
+            Column() {
+              Text($r('app.string.Index_downloads_title'))
+                .textAlign(TextAlign.Start)
+              Text('这里什么都还没有哦 ( ´ ▽ ` )ﾉ')
+                .textAlign(TextAlign.Center)
 
 
 
-        */
+            }
+            //阻止卡片内点击隐藏
+            .onClick(() => {
+              this.isShow = true
+            })
+            .padding(5)
+            .position({ x: '7%', y: '17%' })
+            .borderRadius(10)
+            .backgroundColor($r('app.color.start_window_background'))
+            .shadow({ radius: 16 })
+            .width('85%')
+            .height('80%')
+
+            //.backgroundColor(Color.Blue)
+          }
+          .width('100%')
+          .height('88%')
+          //.backgroundColor(Color.Pink)
+          .onClick(() => {
+            this.isShow = !this.isShow
+          })
+
+        }
+
 
       }
       .backgroundColor($r('app.color.background_color'))
@@ -321,13 +466,13 @@ struct Index {
   async copyResFile2Sandbox(resFile: string): Promise<boolean> {
     let context = getContext(this)
     //计划复制到的目标路径
-    let realUri = context.cacheDir + "/" + resFile
+    this.realUri = context.cacheDir + "/" + resFile
     let rawFd = await context.resourceManager.getRawFd(resFile)
 
     //复制资源文件到沙箱cache文件夹
     try {
-      fs.copyFileSync(rawFd.fd, realUri)
-      this.sandboxFilePath = realUri
+      fs.copyFileSync(rawFd.fd, this.realUri)
+      this.sandboxFilePath = this.realUri
       return true
     } catch (err) {
       console.error(err.message)
@@ -342,12 +487,12 @@ struct Index {
     //文件名称
     let fileName = segments[segments.length-1]
     //计划复制到的目标路径
-    let realUri = context.cacheDir + "/" + fileName
+    this.realUri = context.cacheDir + "/" + fileName
     //复制选择的文件到沙箱cache文件夹
     try {
       let file = fs.openSync(selectFile);
-      fs.copyFileSync(file.fd, realUri)
-      this.sandboxFilePath = realUri
+      fs.copyFileSync(file.fd, this.realUri)
+      this.sandboxFilePath = this.realUri
       return true
     } catch (err) {
       console.error(err.message)
@@ -361,6 +506,29 @@ struct Index {
       this.showing_downloads = !this.showing_downloads;
     })
   }
+
+  // 使用 substring 和 lastIndexOf 方法来获取不带后缀的文件名
+  private getFileName(fullFileName: string) {
+    // 查找最后一个点的位置
+    let lastDotIndex: number = fullFileName.lastIndexOf(".");
+    // 如果没有找到点或者点在字符串的开始或结束位置，则返回整个字符串
+    if (lastDotIndex < 1) {
+      return fullFileName;
+    }
+    // 截取文件名（不包括后缀）
+    return fullFileName.substring(0, lastDotIndex);
+  }
+
+  aboutToDisappear() {
+    console.info('MyComponent aboutToDisappear')
+    //退出应用时删除cache目录
+    fs.rmdir(this.realUri).then(() => {
+      console.info("rmdir succeed");
+    }).catch((err: BusinessError) => {
+      console.error("rmdir failed with error message: " + err.message + ", error code: " + err.code);
+    });
+  }
+
 }
 
 
