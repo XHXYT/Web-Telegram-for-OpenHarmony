@@ -6,9 +6,9 @@
         "type": "HarmonyOS",
         "material": {
           "certpath": "C:\\Users\\Administrator\\.ohos\\config\\webTelegram_Web-Telegram-for-OpenHarmony_sQ8Z9-u8lI9L3Ud0Bjbwu5u5APftVNz6g1MhFeZrxyc=.cer",
-          "storePassword": "0000001A71D100C3D53FFF41298B599E112D114CFEC344F19029A8C852972E6D1F39A332ED1EF01D0A76",
+          "storePassword": "0000001A4BE4B22A6374B2520D00A441EBEC48E2D7FB6AF8C824B916EDB3492754DEF3217B35EACDF463",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001A3073C80ABF5BABAECA8253BA5DBFBB2B4D91A7C022AF2C54444A424F5CC5DD95379F7B463425",
+          "keyPassword": "0000001A0A791A08867E3C0333E853AD4E22533BFB7429504ED63B9A15FC890979F729F53F5821321471",
           "profile": "C:\\Users\\Administrator\\.ohos\\config\\webTelegram_Web-Telegram-for-OpenHarmony_sQ8Z9-u8lI9L3Ud0Bjbwu5u5APftVNz6g1MhFeZrxyc=.p7b",
           "signAlg": "SHA256withECDSA",
           "storeFile": "C:\\Users\\Administrator\\.ohos\\config\\webTelegram_Web-Telegram-for-OpenHarmony_sQ8Z9-u8lI9L3Ud0Bjbwu5u5APftVNz6g1MhFeZrxyc=.p12"

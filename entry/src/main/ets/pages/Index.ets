@@ -8,7 +8,7 @@ import { promptAction } from '@kit.ArkUI';
 import { connection } from '@kit.NetworkKit';
 import { wantAgent, WantAgent } from '@kit.AbilityKit';
 import { notificationManager } from '@kit.NotificationKit';
-
+import  jsStr  from './JavaScripts'
 
 // no User Agent, test
 // https://tool.lu/useragent
@@ -88,6 +88,7 @@ struct Index {
   @State handler: FullScreenExitHandler | null = null; //通知开发者Web组件进入或退出全屏模式
   @State sandboxFilePath: string = "/data/storage/el1/bundle/cache" //文件的沙箱路径
   @State statusBar: number = AppStorage.get<number>('statusBar') as number;
+  @State scripts: Array<ScriptItem> = [{ script: jsStr, scriptRules: ["https://web.telegram.org/"] }];
   @StorageProp('bottomRectHeight') bottomRectHeight: number = 0;
   @StorageProp('topRectHeight') topRectHeight: number = 0;
   controller: webview.WebviewController = new webview.WebviewController()
@@ -197,6 +198,20 @@ struct Index {
           })
           .onPageEnd((event) => {
             hilog.info(0x0, '[Index]', `onPageEnd= ${JSON.stringify(event)}`)
+
+            //运行JavaScript脚本
+            try {
+              this.controller.runJavaScript(jsStr)
+                .then((result) => {
+                  console.log('jsresult: ' + result);
+                })
+                .catch((error: BusinessError) => {
+                  console.error("error: " + error);
+                })
+            } catch (error) {
+              console.error(`ErrorCode: ${(error as BusinessError).code},  Message: ${(error as BusinessError).message}`);
+            }
+
             try {
               //创建文件选择器实例
               let downloaduri: string = '';

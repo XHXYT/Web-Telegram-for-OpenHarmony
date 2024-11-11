@@ -10,6 +10,7 @@
 - [x] 文件上传(支持媒体和资源文件)
 - [x] 文件下载
 - [x] 下载进度条通知(平板暂不支持)
+- [x] 视频控制
 - [ ] 下载列表
 - [ ] 消息提醒
 - [ ] 还可以有更多哦 Ｏ(≧∇≦)Ｏ
@@ -30,6 +31,8 @@
 
 特别感谢 [app-youtube](https://github.com/eclipse-oniro4openharmony/app-youtube)这是本项目梦开始的地方。
 
-特别感谢[LinysBrowser_NEXT](https://github.com/awaLiny2333/LinysBrowser_NEXT)作为代码小白的我，在这个优秀的开源项目中学到了很多新知识。这是一个特别有意思的OpenHarmony平台的浏览器项目哦。
+特别感谢 [LinysBrowser_NEXT](https://github.com/awaLiny2333/LinysBrowser_NEXT)作为代码小白的我，在这个优秀的开源项目中学到了很多新知识。这是一个特别有意思的OpenHarmony平台的浏览器项目哦。
+
+特别感谢 [俺的手机视频脚本](https://greasyfork.org/zh-CN/scripts/456542-%E4%BF%BA%E7%9A%84%E6%89%8B%E6%9C%BA%E8%A7%86%E9%A2%91%E8%84%9A%E6%9C%AC) 本项目视频控制功能由此脚本修改而来。
 
 特别感谢群友们的支持与帮助。
